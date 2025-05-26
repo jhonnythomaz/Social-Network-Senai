@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rede Social Moderna</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary-color: #4267B2;
+      --background-color: #f0f2f5;
+      --white: #ffffff;
+      --text-color: #333;
+      --gray: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: var(--white);
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .navbar .user-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar .user-info img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-left: 10px;
+    }
+
+    .container {
+      display: flex;
+      padding: 20px;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      margin-right: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      height: fit-content;
+    }
+
+    .sidebar h3 {
+      margin-bottom: 15px;
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+
+    .friend {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .friend img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .friend span {
+      font-size: 15px;
+      color: var(--text-color);
+    }
+
+    .feed {
+      flex: 1;
+    }
+
+    .post {
+      background-color: var(--white);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .post-header-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .post-header img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .post-header span {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .post-date {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .post-content {
+      font-size: 16px;
+      color: var(--text-color);
+      margin-bottom: 15px;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-content > img {
+        max-width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+      color: var(--gray);
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+
+    .post-actions span {
+      cursor: pointer;
+    }
+
+    .post-actions span:hover {
+      color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+
+    .comments {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">Nexo</div>
+    <div class="user-info">
+      <span>Luana</span>
+      <img src="https://imgs.search.brave.com/OL6QgAFgcJyu4O1uLmEYcxMU9ZssDfxgZ332Y7IkRls/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYTh0N2dQ/ZDV6M1RUcW9UeWxT/cE5aSkNYVW95cGlh/bFFrZWVXWWVWQnY0/TS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTl0/WldScC9ZUzVwYzNS/dlkydHdhRzkwL2J5/NWpiMjB2YVdRdk1U/TXgvTVRBNE5ERTJP/Qzl3YUc5MC9ieTl2/ZG1WeWFtOTVaV1F0/L2NISmxkSFI1TFdG/emFXRnUvTFhkdmJX/RnVMV3h2YjJzdC9Z/WFF0WTJGdFpYSmhM/WGRwL2RHZ3RjMmx1/WTJWeVpTMXMvWVhW/bmFIUmxjaTVxY0dj/Xy9jejAyTVRKNE5q/RXlKbmM5L01DWnJQ/VEl3Sm1NOVlXdFQv/TkdWTFVqTnpkV2h2/VURsai9kV3MzWHpk/YVZscHlUSFZOL1RV/Y3dTV2RQVVhaUk5V/cHAvVW0xQlp6MA" alt="Lucas">
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <div class="container">
+    
+    <!-- Sidebar com Amigos -->
+    <div class="sidebar">
+      <h3>Amigos</h3>
+      <div class="friend">
+        <img src="https://imgs.search.brave.com/OL6QgAFgcJyu4O1uLmEYcxMU9ZssDfxgZ332Y7IkRls/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYTh0N2dQ/ZDV6M1RUcW9UeWxT/cE5aSkNYVW95cGlh/bFFrZWVXWWVWQnY0/TS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTl0/WldScC9ZUzVwYzNS/dlkydHdhRzkwL2J5/NWpiMjB2YVdRdk1U/TXgvTVRBNE5ERTJP/Qzl3YUc5MC9ieTl2/ZG1WeWFtOTVaV1F0/L2NISmxkSFI1TFdG/emFXRnUvTFhkdmJX/RnVMV3h2YjJzdC9Z/WFF0WTJGdFpYSmhM/WGRwL2RHZ3RjMmx1/WTJWeVpTMXMvWVhW/bmFIUmxjaTVxY0dj/Xy9jejAyTVRKNE5q/RXlKbmM5L01DWnJQ/VEl3Sm1NOVlXdFQv/TkdWTFVqTnpkV2h2/VURsai9kV3MzWHpk/YVZscHlUSFZOL1RV/Y3dTV2RQVVhaUk5V/cHAvVW0xQlp6MA" alt="Ana">
+        <span>Ana Souza</span>
+      </div>
+      <div class="friend">
+        <img src="https://imgs.search.brave.com/OL6QgAFgcJyu4O1uLmEYcxMU9ZssDfxgZ332Y7IkRls/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYTh0N2dQ/ZDV6M1RUcW9UeWxT/cE5aSkNYVW95cGlh/bFFrZWVXWWVWQnY0/TS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTl0/WldScC9ZUzVwYzNS/dlkydHdhRzkwL2J5/NWpiMjB2YVdRdk1U/TXgvTVRBNE5ERTJP/Qzl3YUc5MC9ieTl2/ZG1WeWFtOTVaV1F0/L2NISmxkSFI1TFdG/emFXRnUvTFhkdmJX/RnVMV3h2YjJzdC9Z/WFF0WTJGdFpYSmhM/WGRwL2RHZ3RjMmx1/WTJWeVpTMXMvWVhW/bmFIUmxjaTVxY0dj/Xy9jejAyTVRKNE5q/RXlKbmM5L01DWnJQ/VEl3Sm1NOVlXdFQv/TkdWTFVqTnpkV2h2/VURsai9kV3MzWHpk/YVZscHlUSFZOL1RV/Y3dTV2RQVVhaUk5V/cHAvVW0xQlp6MA" alt="João">
+        <span>João Lima</span>
+      </div>
+      <div class="friend">
+        <img src="https://imgs.search.brave.com/OL6QgAFgcJyu4O1uLmEYcxMU9ZssDfxgZ332Y7IkRls/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYTh0N2dQ/ZDV6M1RUcW9UeWxT/cE5aSkNYVW95cGlh/bFFrZWVXWWVWQnY0/TS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTl0/WldScC9ZUzVwYzNS/dlkydHdhRzkwL2J5/NWpiMjB2YVdRdk1U/TXgvTVRBNE5ERTJP/Qzl3YUc5MC9ieTl2/ZG1WeWFtOTVaV1F0/L2NISmxkSFI1TFdG/emFXRnUvTFhkdmJX/RnVMV3h2YjJzdC9Z/WFF0WTJGdFpYSmhM/WGRwL2RHZ3RjMmx1/WTJWeVpTMXMvWVhW/bmFIUmxjaTVxY0dj/Xy9jejAyTVRKNE5q/RXlKbmM5L01DWnJQ/VEl3Sm1NOVlXdFQv/TkdWTFVqTnpkV2h2/VURsai9kV3MzWHpk/YVZscHlUSFZOL1RV/Y3dTV2RQVVhaUk5V/cHAvVW0xQlp6MA" alt="Carla">
+        <span>Carla Mendes</span>
+      </div>
+    </div>
+
+    <!-- Mural de Publicações -->
+    <div class="feed">
+      <div class="post">
+        <div class="post-header">
+          <div class="post-header-left">
+            <img src="https://imgs.search.brave.com/OL6QgAFgcJyu4O1uLmEYcxMU9ZssDfxgZ332Y7IkRls/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYTh0N2dQ/ZDV6M1RUcW9UeWxT/cE5aSkNYVW95cGlh/bFFrZWVXWWVWQnY0/TS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTl0/WldScC9ZUzVwYzNS/dlkydHdhRzkwL2J5/NWpiMjB2YVdRdk1U/TXgvTVRBNE5ERTJP/Qzl3YUc5MC9ieTl2/ZG1WeWFtOTVaV1F0/L2NISmxkSFI1TFdG/emFXRnUvTFhkdmJX/RnVMV3h2YjJzdC9Z/WFF0WTJGdFpYSmhM/WGRwL2RHZ3RjMmx1/WTJWeVpTMXMvWVhW/bmFIUmxjaTVxY0dj/Xy9jejAyTVRKNE5q/RXlKbmM5L01DWnJQ/VEl3Sm1NOVlXdFQv/TkdWTFVqTnpkV2h2/VURsai9kV3MzWHpk/YVZscHlUSFZOL1RV/Y3dTV2RQVVhaUk5V/cHAvVW0xQlp6MA" alt="Lucas">
+            <span>Lucas Ribeiro</span>
+          </div>
+          <div class="post-date">26 Mai 2025</div>
+        </div>
+        <div class="post-content">
+          Hoje foi um ótimo dia para caminhar no parque 🌳☀️
+          <img src="https://imgs.search.brave.com/APSkN6b4PriFBKu4NsB3KzHRhJUoTXaYGJpOteYbjsk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYlViZUl5/blVTeHpTS1hxbHlk/U2pZVlJjUjJ1aW9t/bUlzLWJuQUt3MDVu/dy9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlp/ZFhKei9kQzV6YUc5/d2FXWjVZMlJ1L0xt/TnZiUzl3YUc5MGIz/TXYvWW1WaFkyZ3Rj/M1Z1YzJWMC9MWE5w/YkdodmRXVjBkR1Z6/L0xtcHdaejkzYVdS/MGFEMHgvTURBd0pt/WnZjbTFoZEQxdy9h/bkJuSm1WNGFXWTlN/Q1pwL2NIUmpQVEE" alt="">
+        </div>
+        <div class="post-actions">
+          <span>❤️ Curtir (12)</span>
+          <span onclick="abrirComentarios()" >💬 Comentários (4)</span>
+        </div>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <div class="post-header-left">
+            <img src="https://imgs.search.brave.com/OL6QgAFgcJyu4O1uLmEYcxMU9ZssDfxgZ332Y7IkRls/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYTh0N2dQ/ZDV6M1RUcW9UeWxT/cE5aSkNYVW95cGlh/bFFrZWVXWWVWQnY0/TS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTl0/WldScC9ZUzVwYzNS/dlkydHdhRzkwL2J5/NWpiMjB2YVdRdk1U/TXgvTVRBNE5ERTJP/Qzl3YUc5MC9ieTl2/ZG1WeWFtOTVaV1F0/L2NISmxkSFI1TFdG/emFXRnUvTFhkdmJX/RnVMV3h2YjJzdC9Z/WFF0WTJGdFpYSmhM/WGRwL2RHZ3RjMmx1/WTJWeVpTMXMvWVhW/bmFIUmxjaTVxY0dj/Xy9jejAyTVRKNE5q/RXlKbmM5L01DWnJQ/VEl3Sm1NOVlXdFQv/TkdWTFVqTnpkV2h2/VURsai9kV3MzWHpk/YVZscHlUSFZOL1RV/Y3dTV2RQVVhaUk5V/cHAvVW0xQlp6MA" alt="Juliana">
+            <span>Juliana Farias</span>
+          </div>
+          <div class="post-date">25 Mai 2025</div>
+        </div>
+        <div class="post-content">
+          Novo projeto lançado! Confiram o link na bio 💼🚀
+          <img src="https://imgs.search.brave.com/APSkN6b4PriFBKu4NsB3KzHRhJUoTXaYGJpOteYbjsk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vYlViZUl5/blVTeHpTS1hxbHlk/U2pZVlJjUjJ1aW9t/bUlzLWJuQUt3MDVu/dy9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlp/ZFhKei9kQzV6YUc5/d2FXWjVZMlJ1L0xt/TnZiUzl3YUc5MGIz/TXYvWW1WaFkyZ3Rj/M1Z1YzJWMC9MWE5w/YkdodmRXVjBkR1Z6/L0xtcHdaejkzYVdS/MGFEMHgvTURBd0pt/WnZjbTFoZEQxdy9h/bkJuSm1WNGFXWTlN/Q1pwL2NIUmpQVEE" alt="">
+        </div>
+        <div class="post-actions">
+          <span>❤️ Curtir (30)</span>
+          <span onclick="abrirComentarios()" >💬 Comentários (10)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  function abrirComentarios() {
+    Swal.fire({
+      title: 'Comentários',
+      html: `
+        <div class="comments" style="text-align: left; max-height: 300px; overflow-y: auto;">
+          <p><strong>Joana:</strong> Esse post ficou incrível! 👏</p>
+          <p><strong>Lucas:</strong> Concordo demais, parabéns!</p>
+          <p><strong>Maria:</strong> Alguém sabe quando vai ser o próximo evento?</p>
+          <hr>
+      `,
+      confirmButtonText: 'Fechar',
+      
+    });
+  }
+</script>
+
+
+</body>
+</html>
