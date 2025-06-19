@@ -1,0 +1,33 @@
+<!-- Arquivo: templates/pages/notifications.html -->
+{% extends 'pages/base.html' %}
+
+{% block title %}Suas Notificações{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h1 class="mb-4">Notificações</h1>
+
+            {% for notification in notifications %}
+                <div class="alert alert-secondary p-3 mb-2">
+                    {{ notification.text }}
+                    
+                    <!-- Se a notificação for sobre um post, adiciona um link para ele -->
+                    {% if notification.post %}
+                        <a href="{% url 'post_detail' notification.post.id %}" class="fw-bold text-decoration-none">Ver Post</a>
+                    {% endif %}
+
+                    <div class="text-muted small mt-1">
+                        {{ notification.created_at|date:'d/m/Y H:i' }}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card">
+                    <div class="card-body">
+                        Você não tem nenhuma notificação.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

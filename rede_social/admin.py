@@ -1,11 +1,9 @@
 from django.contrib import admin
-from .models import Comment, Post, Friendship, Invite
+# Corrigido: removemos 'Friendship' da lista de importação
+from .models import Post, Comment, Invite 
 
-class InviteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'status']
-
-admin.site.register(Comment)
+# Registrando os modelos que existem para aparecerem na área de admin
 admin.site.register(Post)
-admin.site.register(Friendship)
-admin.site.register(Invite, InviteAdmin)
+admin.site.register(Comment)
+admin.site.register(Invite)
 

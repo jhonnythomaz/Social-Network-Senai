@@ -1,0 +1,19 @@
+{% extends 'pages/base.html' %}
+
+{% block title %}Meus Convites{% endblock %}
+
+{% block content %}
+    <h1>Meus Convites Pendentes</h1>
+
+    {% for invite in invites %}
+        <div>
+            <p>
+                <b>{{ invite.sender.username }}</b> te enviou um convite de amizade.
+                <a href="{% url 'accept_invite' invite.id %}">[ Aceitar ]</a>
+                <a href="{% url 'reject_invite' invite.id %}">[ Rejeitar ]</a>
+            </p>
+        </div>
+    {% empty %}
+        <p>Você não tem nenhum convite pendente.</p>
+    {% endfor %}
+{% endblock %}

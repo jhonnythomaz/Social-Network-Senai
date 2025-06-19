@@ -1,61 +1,64 @@
+# Arquivo: rede_social/models.py
+
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=255)
     content = models.TextField()
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
+
     def __str__(self):
-        return self.user.username    
+        return f'"{self.title}" por {self.user.username}'
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username
-    
-class Friendship(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
-    friends = models.ManyToManyField(User, related_name='friends')
+        return f'Comentário de {self.user.username} em "{self.post.title}"'
+
+class Invite(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    class Status(models.TextChoices):
+        SENT = 'SENT', 'Enviado'
+        ACCEPTED = 'ACCEPTED', 'Aceito'
+        REJECTED = 'REJECTED', 'Rejeitado'
+
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_invites')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_invites')
+    status = models.CharField(max_length=8, choices=Status.choices, default=Status.SENT)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('sender', 'receiver')
 
     def __str__(self):
-        return self.user.username
+        return f'Convite de {self.sender.username} para {self.receiver.username} ({self.get_status_display()})'
 
+class Notification(models.Model):
+    class NotificationType(models.TextChoices):
+        LIKE = 'LIKE', 'Curtida'
+        COMMENT = 'COMMENT', 'Comentário'
+        INVITE = 'INVITE', 'Convite'
 
-STATUS = {
-    'SENDED':'SENDED',
-    'REJECTED':'REJECTED',
-    'APROVED':'APROVED'
-}
-import uuid
-class Invite(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    status = models.CharField(max_length=8, choices=STATUS)
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    notification_type = models.CharField(max_length=10, choices=NotificationType.choices)
+    text = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    accept_at = models.DateTimeField(auto_now_add=True)
-
     
-# class ChatRoom(models.Model):
-#     name = models.CharField(max_length=255)
-#     user_1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-#     user_2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, null=True)
 
-# ChatRoom.objects.filter('id+id2')
-
-# class Message(models.Model):
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-#     content = models.TextField()
-#     created_at = models.DateTimeField()
-
-# class Message(models.Model):
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-#     reciever = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reciever')
-#     content = models.TextField()
-#     created_at = models.DateTimeField()
-
-# from django.db.models import Q
-# Message.objects.filter(Q(reciver=request.user) | Q(sender=request.user))
+    def __str__(self):
+        return f'Notificação para {self.recipient.username}: {self.text}'

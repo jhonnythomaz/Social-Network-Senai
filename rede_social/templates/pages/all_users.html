@@ -1,0 +1,18 @@
+{% extends 'pages/base.html' %}
+
+{% block title %}Encontrar Pessoas{% endblock %}
+
+{% block content %}
+    <h1>Encontrar Pessoas</h1>
+    
+    {% for user in users %}
+        <div>
+            <p>
+                {{ user.username }}
+                <a href="{% url 'send_invite' user.id %}">[ Enviar Convite ]</a>
+            </p>
+        </div>
+    {% empty %}
+        <p>Não há novos usuários para adicionar.</p>
+    {% endfor %}
+{% endblock %}

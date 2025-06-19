@@ -1,0 +1,15 @@
+<!-- Arquivo: templates/pages/register.html -->
+{% extends 'pages/base.html' %}
+
+{% block title %}Registrar{% endblock %}
+
+{% block content %}
+    <h1>Registrar Nova Conta</h1>
+    <p>Preencha o formulário para criar sua conta.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registrar</button>
+    </form>
+{% endblock %}

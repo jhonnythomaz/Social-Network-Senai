@@ -1,0 +1,76 @@
+<!-- Arquivo: templates/pages/post_detail.html -->
+{% extends 'pages/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title">{{ post.title }}</h1>
+                <p class="card-text">
+                    <small class="text-muted">
+                        Postado por:
+                        <a href="{% url 'profile' post.user.id %}">
+                            <strong>{{ post.user.username }}</strong>
+                        </a>
+                        em {{ post.created_at|date:'d/m/Y H:i' }}
+                    </small>
+                </p>
+            </div>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+            {% endif %}
+            <div class="card-body">
+                <p class="card-text fs-5">{{ post.content }}</p>
+
+                <a href="{% url 'like_post' post.id %}" class="btn btn-primary">
+                    {% if user in post.likes.all %}
+                        Descurtir
+                    {% else %}
+                        Curtir
+                    {% endif %}
+                </a>
+                <span class="ms-2">{{ post.likes.count }} curtida(s)</span>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <h5 class="card-header">Deixe seu comentário:</h5>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" class="btn btn-primary mt-2">Comentar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <h5 class="card-header">Comentários ({{ comments.count }})</h5>
+            <div class="card-body">
+                {% for comment in comments %}
+                    <div class="d-flex mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                {{ comment.user.username|first|upper }}
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <a href="{% url 'profile' comment.user.id %}" class="fw-bold text-decoration-none text-dark">{{ comment.user.username }}</a>
+                            <div class="text-muted small">{{ comment.created_at|date:"d M, Y" }}</div>
+                            <p class="mt-1">{{ comment.content }}</p>
+                        </div>
+                    </div>
+                    {% if not forloop.last %}<hr>{% endif %}
+                {% empty %}
+                    <p class="mb-0">Seja o primeiro a comentar!</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

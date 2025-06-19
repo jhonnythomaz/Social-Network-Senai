@@ -1,23 +1,55 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial</title>
-</head>
-<body>
-    
-    <h1>POSTAGENS</h1>
+<!-- Arquivo: templates/pages/index.html -->
+{% extends 'pages/base.html' %}
 
-    {% for post in posts %}
+{% block title %}Feed Principal{% endblock %}
 
-        <p>{{ post.title }}</p>
-        <p>{{ post.content }}</p>
-        <p>{{ post.created_at|date:'d/m/Y H:m' }}</p>
-        <p>{{ post.user }}</p>
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <a href="{% url 'create_post' %}" class="btn btn-primary btn-lg"> + Criar Nova Postagem</a>
+                </div>
+            </div>
 
-    {% endfor  %}
-    
+            <h1 class="mb-4">Seu Feed</h1>
 
-</body>
-</html>
+            {% for post in posts %}
+                <div class="card mb-3">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <a href="{% url 'post_detail' post.id %}" class="text-decoration-none text-dark">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                        </a>
+                        <p class="card-text">{{ post.content }}</p>
+                        
+                        <a href="{% url 'like_post' post.id %}" class="btn btn-outline-primary btn-sm">
+                            {% if user in post.likes.all %}
+                                Descurtir
+                            {% else %}
+                                Curtir
+                            {% endif %}
+                        </a>
+                        <span class="ms-2 text-muted">{{ post.likes.count }} curtida(s)</span>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Postado por: 
+                        <a href="{% url 'profile' post.user.id %}">
+                            <strong>{{ post.user.username }}</strong>
+                        </a>
+                        em {{ post.created_at|date:'d/m/Y H:i' }}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Ainda não há posts no seu feed. Siga alguém ou seja o primeiro a postar!</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

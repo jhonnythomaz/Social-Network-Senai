@@ -1,0 +1,40 @@
+{% extends 'pages/base.html' %}
+
+{% block title %}Perfil de {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="card-title">Perfil de {{ profile_user.username }}</h1>
+                </div>
+            </div>
+            
+            <h3 class="mb-4">Postagens de {{ profile_user.username }}:</h3>
+
+            {% for post in posts %}
+                <div class="card mb-3">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <a href="{% url 'post_detail' post.id %}" class="text-decoration-none text-dark">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                        </a>
+                        <p class="card-text">{{ post.content }}</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Postado em {{ post.created_at|date:'d/m/Y H:i' }}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card">
+                    <div class="card-body">
+                        <p>{{ profile_user.username }} ainda não fez nenhuma postagem.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
